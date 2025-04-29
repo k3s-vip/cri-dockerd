@@ -73,21 +73,6 @@ func (ds *dockerService) CreateContainer(
 	if err != nil {
 		return nil, fmt.Errorf("unable to get container's sandbox ID: %v", err)
 	}
-	rtHandlers, err := ds.getRuntimeHandlers()
-	if err != nil {
-		return nil, fmt.Errorf("unable to get container's runtime handlers: %v", err)
-	}
-	var rtHandler *v1.RuntimeHandler
-	for _, h := range rtHandlers {
-		if h.Name == sandboxInfo.HostConfig.Runtime {
-			rtHandler = h
-			break
-		}
-	}
-	mountBindings, err := libdocker.GenerateMountBindings(mounts, terminationMessagePath, rtHandler)
-	if err != nil {
-		return nil, err
-	}
 	createConfig := dockerbackend.ContainerCreateConfig{
 		Name: containerName,
 		Config: &container.Config{
@@ -108,7 +93,7 @@ func (ds *dockerService) CreateContainer(
 			},
 		},
 		HostConfig: &container.HostConfig{
-			Mounts: mountBindings,
+			Mounts: libdocker.GenerateMountBindings(mounts, terminationMessagePath),
 			RestartPolicy: container.RestartPolicy{
 				Name: "no",
 			},
