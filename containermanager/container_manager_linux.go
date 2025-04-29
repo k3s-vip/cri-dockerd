@@ -28,6 +28,7 @@ import (
 
 	"github.com/opencontainers/runc/libcontainer/cgroups"
 	cgroupfs "github.com/opencontainers/runc/libcontainer/cgroups/fs"
+	cgroupfs2 "github.com/opencontainers/runc/libcontainer/cgroups/fs2"
 	"github.com/opencontainers/runc/libcontainer/configs"
 	"github.com/opencontainers/runc/libcontainer/devices"
 	"github.com/sirupsen/logrus"
@@ -136,6 +137,9 @@ func createCgroupManager(name string) (cgroups.Manager, error) {
 				},
 			},
 		},
+	}
+	if cgroups.IsCgroup2UnifiedMode() {
+		return cgroupfs2.NewManager(cg, "")
 	}
 	return cgroupfs.NewManager(cg, nil)
 }
