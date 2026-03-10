@@ -32,7 +32,6 @@ import (
 	godigest "github.com/opencontainers/go-digest"
 	"github.com/sirupsen/logrus"
 	v1 "k8s.io/cri-api/pkg/apis/runtime/v1"
-	crierrors "k8s.io/cri-api/pkg/errors"
 	"k8s.io/kubernetes/pkg/apis/core"
 )
 
@@ -209,11 +208,7 @@ func GenerateEnvList(envs []*v1.KeyValue) (result []string) {
 // generateMountBindings converts the mount list to a list of [dockermount.Mount] that
 // can be understood by docker.
 // SELinux labels are not handled here.
-func GenerateMountBindings(mounts []*v1.Mount, terminationMessagePath string, rtHandler *v1.RuntimeHandler) ([]dockermount.Mount, error) {
-	var rroSupported bool
-	if rtHandler != nil {
-		rroSupported = rtHandler.Features.RecursiveReadOnlyMounts
-	}
+func GenerateMountBindings(mounts []*v1.Mount, terminationMessagePath string) []dockermount.Mount {
 	if terminationMessagePath == "" {
 		terminationMessagePath = core.TerminationMessagePathDefault
 	}
@@ -243,26 +238,13 @@ func GenerateMountBindings(mounts []*v1.Mount, terminationMessagePath string, rt
 				CreateMountpoint: true,
 			},
 		}
-		if m.RecursiveReadOnly {
-			if !rroSupported {
-				return nil, fmt.Errorf("%w: runtime handler does not support recursive read-only mounts (hostPath=%q)",
-					crierrors.ErrRROUnsupported, m.HostPath)
-			}
-			if m.Propagation != v1.MountPropagation_PROPAGATION_PRIVATE {
-				return nil, fmt.Errorf("recursive read-only mount needs private propagation, got %q (hostPath=%q)",
-					m.Propagation.String(), m.HostPath)
-			}
-			if !m.Readonly {
-				return nil, fmt.Errorf("recursive read-only mount conflicts with RW mount (hostPath=%q)",
-					m.HostPath)
-			}
-		}
 		if m.Readonly {
 			bind.ReadOnly = true
+
 			// Docker v25 treats read-only mounts as recursively read-only by default,
 			// but this appeared to be too much breaking for Kubernetes
 			// https://github.com/Mirantis/cri-dockerd/issues/309
-			bind.BindOptions.ReadOnlyNonRecursive = !m.RecursiveReadOnly
+			bind.BindOptions.ReadOnlyNonRecursive = true
 		}
 		switch m.Propagation {
 		case v1.MountPropagation_PROPAGATION_PRIVATE:
@@ -287,7 +269,7 @@ func GenerateMountBindings(mounts []*v1.Mount, terminationMessagePath string, rt
 
 		result = append(result, bind)
 	}
-	return result, nil
+	return result
 }
 
 func isSingleFileMount(hostPath string, containerPath string, terminationMessagePath string) bool {
