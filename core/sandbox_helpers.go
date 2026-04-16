@@ -438,7 +438,7 @@ func ensureSandboxImageExists(client libdocker.DockerClientInterface, image stri
 		return err
 	}
 
-	keyring := credentialprovider.NewDockerKeyring()
+	keyring := credentialprovider.NewDefaultDockerKeyring()
 	creds, withCredentials := keyring.Lookup(repoToPull)
 	if !withCredentials {
 		logrus.Infof("Pulling the image without credentials. Image: %v", image)
@@ -453,7 +453,7 @@ func ensureSandboxImageExists(client libdocker.DockerClientInterface, image stri
 
 	var pullErrs []error
 	for _, currentCreds := range creds {
-		authConfig := dockerregistry.AuthConfig(currentCreds)
+		authConfig := dockerregistry.AuthConfig(currentCreds.AuthConfig)
 		err := client.PullImage(image, authConfig, dockerimage.PullOptions{})
 		// If there was no error, return success
 		if err == nil {
