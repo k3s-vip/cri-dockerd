@@ -27,8 +27,9 @@ import (
 	"time"
 
 	"github.com/opencontainers/runc/libcontainer/cgroups"
+	"github.com/opencontainers/runc/libcontainer/cgroups/devices/config"
 	cgroupfs "github.com/opencontainers/runc/libcontainer/cgroups/fs"
-	"github.com/opencontainers/runc/libcontainer/configs"
+	cgroupfs2 "github.com/opencontainers/runc/libcontainer/cgroups/fs2"
 	"github.com/opencontainers/runc/libcontainer/devices"
 	"github.com/sirupsen/logrus"
 	utilversion "k8s.io/apimachinery/pkg/util/version"
@@ -119,23 +120,26 @@ func createCgroupManager(name string) (cgroups.Manager, error) {
 	}
 	logrus.Infof("Configuring resource-only container %s with memory limit %d", name, memoryLimit)
 
-	cg := &configs.Cgroup{
+	cg := &cgroups.Cgroup{
 		Parent: "/",
 		Name:   name,
-		Resources: &configs.Resources{
+		Resources: &cgroups.Resources{
 			Memory:      int64(memoryLimit),
 			MemorySwap:  -1,
 			SkipDevices: true,
 			Devices: []*devices.Rule{
 				{
-					Minor:       devices.Wildcard,
-					Major:       devices.Wildcard,
-					Type:        'a',
+					Minor:       config.Wildcard,
+					Major:       config.Wildcard,
+					Type:        config.WildcardDevice,
 					Permissions: "rwm",
 					Allow:       true,
 				},
 			},
 		},
+	}
+	if cgroups.IsCgroup2UnifiedMode() {
+		return cgroupfs2.NewManager(cg, "")
 	}
 	return cgroupfs.NewManager(cg, nil)
 }
