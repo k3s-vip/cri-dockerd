@@ -31,9 +31,10 @@ import (
 	"sync"
 
 	"github.com/Mirantis/cri-dockerd/config"
+	"github.com/vishvananda/netlink"
 
 	"github.com/sirupsen/logrus"
-	v1 "k8s.io/api/core/v1"
+	"golang.org/x/sys/unix"
 	utilerrors "k8s.io/apimachinery/pkg/util/errors"
 	"k8s.io/kubernetes/pkg/proxy/conntrack"
 	utiliptables "k8s.io/kubernetes/pkg/util/iptables"
@@ -218,7 +219,15 @@ func (hm *hostportManager) Add(
 			isIPv6,
 		)
 		for _, port := range conntrackPortsToRemove {
-			err = conntrack.ClearEntriesForPort(hm.execer, port, isIPv6, v1.ProtocolUDP)
+			conntrackFilter := &netlink.ConntrackFilter{}
+			conntrackFilter.AddProtocol(17) // udp protocol filter = 17
+			conntrackFilter.AddPort(netlink.ConntrackOrigDstPort, uint16(port))
+			ipfamily := unix.AF_INET
+			if isIPv6 {
+				ipfamily = unix.AF_INET6
+			}
+			conntrackExecer := conntrack.New()
+			_, err = conntrackExecer.ClearEntries(uint8(ipfamily), conntrackFilter)
 			if err != nil {
 				logrus.Errorf("Failed to clear udp conntrack for port %d: %v", port, err)
 			}
