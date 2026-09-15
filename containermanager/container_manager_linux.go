@@ -26,11 +26,10 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/opencontainers/runc/libcontainer/cgroups"
-	"github.com/opencontainers/runc/libcontainer/cgroups/devices/config"
-	cgroupfs "github.com/opencontainers/runc/libcontainer/cgroups/fs"
-	cgroupfs2 "github.com/opencontainers/runc/libcontainer/cgroups/fs2"
-	"github.com/opencontainers/runc/libcontainer/devices"
+	"github.com/opencontainers/cgroups"
+	"github.com/opencontainers/cgroups/devices/config"
+	cgroupfs "github.com/opencontainers/cgroups/fs"
+	cgroupfs2 "github.com/opencontainers/cgroups/fs2"
 	"github.com/sirupsen/logrus"
 	utilversion "k8s.io/apimachinery/pkg/util/version"
 	"k8s.io/apimachinery/pkg/util/wait"
@@ -127,7 +126,7 @@ func createCgroupManager(name string) (cgroups.Manager, error) {
 			Memory:      int64(memoryLimit),
 			MemorySwap:  -1,
 			SkipDevices: true,
-			Devices: []*devices.Rule{
+			Devices: []*config.Rule{
 				{
 					Minor:       config.Wildcard,
 					Major:       config.Wildcard,
