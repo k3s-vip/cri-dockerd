@@ -23,7 +23,7 @@ import (
 	"os"
 	"strconv"
 
-	"github.com/opencontainers/runc/libcontainer/cgroups"
+	"github.com/opencontainers/cgroups"
 	"github.com/sirupsen/logrus"
 	utilerrors "k8s.io/apimachinery/pkg/util/errors"
 	utilversion "k8s.io/apimachinery/pkg/util/version"

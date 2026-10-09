@@ -14,9 +14,9 @@ require (
 	github.com/docker/go-connections v0.5.0
 	github.com/emicklei/go-restful v2.16.0+incompatible
 	github.com/golang/mock v1.6.0
+	github.com/opencontainers/cgroups v0.0.5
 	github.com/opencontainers/go-digest v1.0.0
 	github.com/opencontainers/image-spec v1.1.1
-	github.com/opencontainers/runc v1.3.6
 	github.com/sirupsen/logrus v1.9.3
 	github.com/spf13/cobra v1.8.0
 	github.com/spf13/pflag v1.0.5
@@ -147,27 +147,28 @@ require (
 	k8s.io/mount-utils v0.27.8 // indirect
 	sigs.k8s.io/apiserver-network-proxy/konnectivity-client v0.28.0 // indirect
 	sigs.k8s.io/json v0.0.0-20221116044647-bc3834ca7abd // indirect
+	sigs.k8s.io/randfill v1.0.0 // indirect
 	sigs.k8s.io/structured-merge-diff/v4 v4.4.1 // indirect
+	sigs.k8s.io/structured-merge-diff/v6 v6.3.3 // indirect
 	sigs.k8s.io/yaml v1.3.0 // indirect
 )
 
 replace (
 	github.com/distribution/reference => github.com/distribution/reference v0.5.0
 	github.com/docker/docker => github.com/docker/docker v25.0.18+incompatible
-	github.com/opencontainers/runc => github.com/k3s-vip/runc v1.3.6-vip
-	k8s.io/api => github.com/k3s-vip/kubernetes/staging/src/k8s.io/api v1.32.13-eol
-	k8s.io/apiextensions-apiserver => github.com/k3s-vip/kubernetes/staging/src/k8s.io/apiextensions-apiserver v1.32.13-eol
-	k8s.io/apimachinery => github.com/k3s-vip/kubernetes/staging/src/k8s.io/apimachinery v1.32.13-eol
-	k8s.io/apiserver => github.com/k3s-vip/kubernetes/staging/src/k8s.io/apiserver v1.32.13-eol
-	k8s.io/client-go => github.com/k3s-vip/kubernetes/staging/src/k8s.io/client-go v1.32.13-eol
-	k8s.io/cloud-provider => github.com/k3s-vip/kubernetes/staging/src/k8s.io/cloud-provider v1.32.13-eol
-	k8s.io/component-base => github.com/k3s-vip/kubernetes/staging/src/k8s.io/component-base v1.32.13-eol
-	k8s.io/component-helpers => github.com/k3s-vip/kubernetes/staging/src/k8s.io/component-helpers v1.32.13-eol
-	k8s.io/controller-manager => github.com/k3s-vip/kubernetes/staging/src/k8s.io/controller-manager v1.32.13-eol
-	k8s.io/cri-api => github.com/k3s-vip/kubernetes/staging/src/k8s.io/cri-api v1.32.13-eol
-	k8s.io/cri-client => github.com/k3s-vip/kubernetes/staging/src/k8s.io/cri-client v1.32.13-eol
-	k8s.io/csi-translation-lib => github.com/k3s-vip/kubernetes/staging/src/k8s.io/csi-translation-lib v1.32.13-eol
-	k8s.io/kubelet => github.com/k3s-vip/kubernetes/staging/src/k8s.io/kubelet v1.32.13-eol
-	k8s.io/kubernetes => github.com/k3s-vip/kubernetes v1.32.13-eol
-	k8s.io/mount-utils => github.com/k3s-vip/kubernetes/staging/src/k8s.io/mount-utils v1.32.13-eol
+	k8s.io/api => github.com/k3s-vip/kubernetes/staging/src/k8s.io/api v1.34.12-vip
+	k8s.io/apiextensions-apiserver => github.com/k3s-vip/kubernetes/staging/src/k8s.io/apiextensions-apiserver v1.34.12-vip
+	k8s.io/apimachinery => github.com/k3s-vip/kubernetes/staging/src/k8s.io/apimachinery v1.34.12-vip
+	k8s.io/apiserver => github.com/k3s-vip/kubernetes/staging/src/k8s.io/apiserver v1.34.12-vip
+	k8s.io/client-go => github.com/k3s-vip/kubernetes/staging/src/k8s.io/client-go v1.34.12-vip
+	k8s.io/cloud-provider => github.com/k3s-vip/kubernetes/staging/src/k8s.io/cloud-provider v1.34.12-vip
+	k8s.io/component-base => github.com/k3s-vip/kubernetes/staging/src/k8s.io/component-base v1.34.12-vip
+	k8s.io/component-helpers => github.com/k3s-vip/kubernetes/staging/src/k8s.io/component-helpers v1.34.12-vip
+	k8s.io/controller-manager => github.com/k3s-vip/kubernetes/staging/src/k8s.io/controller-manager v1.34.12-vip
+	k8s.io/cri-api => github.com/k3s-vip/kubernetes/staging/src/k8s.io/cri-api v1.34.12-vip
+	k8s.io/cri-client => github.com/k3s-vip/kubernetes/staging/src/k8s.io/cri-client v1.34.12-vip
+	k8s.io/csi-translation-lib => github.com/k3s-vip/kubernetes/staging/src/k8s.io/csi-translation-lib v1.34.12-vip
+	k8s.io/kubelet => github.com/k3s-vip/kubernetes/staging/src/k8s.io/kubelet v1.34.12-vip
+	k8s.io/kubernetes => github.com/k3s-vip/kubernetes v1.34.12-vip
+	k8s.io/mount-utils => github.com/k3s-vip/kubernetes/staging/src/k8s.io/mount-utils v1.34.12-vip
 )
